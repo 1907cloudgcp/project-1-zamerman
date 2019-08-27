@@ -19,7 +19,7 @@ async function setUpImages(){
     if(response.status <200 || response.status > 299){
         value.src = "images/penguins.jpg"
     } else {
-        data =  await response.body.json()
+        data =  await response.json()
         value.src = data["WHATEVER YOU NAMED THE FIELD IN YOUR RETURN"]
     }
     })
@@ -30,9 +30,9 @@ document.getElementById('calc-label').innerText = "YOU CALC LABEL TEXT"
 
 document.getElementById('calc-input').type = 'text' || "YOUR INPUT TYPE, REPLACE TEXT"
 
-function calcSubmit(event){
+async function calcSubmit(event){
     event.preventDefault()
-    fetch("YOUR CALC CLOUD FUNCTION URL", {
+    let result = await fetch("YOUR CALC CLOUD FUNCTION URL", {
         method: 'POST',
         body: JSON.stringify(document.getElementById('calc-input').value)
     })
@@ -41,6 +41,11 @@ function calcSubmit(event){
     } else {
         document.getElementById('calc-input').value = ''
     }
+    let data = await.result.json()
+    let div = document.getElementById('calc-container')
+    let display = document.createElement('p')
+    display.innerText = `Your result is: ${data} `
+    div.appendChild(display)
 
 }
 
@@ -53,7 +58,7 @@ async function buildTable (){
         error.innerText = "Fetch Failed"
         document.getElementById('footer-table').appendChild(error)
     }else {
-        let objectList = await objectResponse.body.json()
+        let objectList = await objectResponse.json()
        
         let headRow = document.createElement('tr')
         document.getElementById('object-table-head').appendChild(headRow)
