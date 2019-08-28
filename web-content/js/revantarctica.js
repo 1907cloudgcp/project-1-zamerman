@@ -26,13 +26,13 @@ async function setUpImages(){
 }
 setUpImages()
 
-document.getElementById('calc-label').innerText = "YOU CALC LABEL TEXT"
+document.getElementById('calc-label').innerText = "Nth Fibonacci"
 
-document.getElementById('calc-input').type = 'text' || "YOUR INPUT TYPE, REPLACE TEXT"
+document.getElementById('calc-input').type = 'text' || "Fibonacci Index"
 
 async function calcSubmit(event){
     event.preventDefault()
-    let result = await fetch("YOUR CALC CLOUD FUNCTION URL", {
+    let result = await fetch("https://us-central1-gcp-project-1-zamerman.cloudfunctions.net/getfibonacci", {
         method: 'POST',
         body: JSON.stringify(document.getElementById('calc-input').value)
     })
