@@ -14,13 +14,13 @@ async function setUpImages(){
     images.push(document.getElementById('carousel-3'))
     images.forEach(async (value, index)=>{
         //index is the numbered image in the carousel if that matters to you
-        let response = await fetch("YOURCLOUDFUNCTION FOR GETTING AN IMAGE")
+        let response = await fetch("https://us-central1-gcp-project-1-zamerman.cloudfunctions.net/getimage?index="+String(index))
         
     if(response.status <200 || response.status > 299){
         value.src = "images/penguins.jpg"
     } else {
         data =  await response.json()
-        value.src = data["WHATEVER YOU NAMED THE FIELD IN YOUR RETURN"]
+        value.src = data["url"]
     }
     })
 }
