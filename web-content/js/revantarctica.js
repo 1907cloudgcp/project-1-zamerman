@@ -41,7 +41,7 @@ async function calcSubmit(event){
     } else {
         document.getElementById('calc-input').value = ''
     }
-    let data = await.result.json()
+    let data = await result.json()
     let div = document.getElementById('calc-container')
     let display = document.createElement('p')
     display.innerText = `Your result is: ${data} `
