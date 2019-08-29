@@ -1,7 +1,7 @@
 let dbObject = {
-    nombre: '',
-    client:'',
-    techTrack:''
+    name: '',
+    batch: '',
+    start_date: ''
 }
 
 document.getElementById('header').innerText = 'RevAntarctica';
@@ -28,7 +28,7 @@ setUpImages()
 
 document.getElementById('calc-label').innerText = "Nth Fibonacci"
 
-document.getElementById('calc-input').type = 'text' || "Fibonacci Index"
+document.getElementById('calc-input').type = 'number'
 
 async function calcSubmit(event){
     event.preventDefault()
@@ -52,7 +52,7 @@ async function calcSubmit(event){
 
 
 async function buildTable (){
-    let objectResponse = await fetch("YOUR CLOUD FUNCTION URL FOR GETTING DATA")
+    let objectResponse = await fetch("https://us-central1-gcp-project-1-zamerman.cloudfunctions.net/getassociates")
     if(objectResponse.status <200 || objectResponse.status >299){
         let error =document.createElement('p')
         error.innerText = "Fetch Failed"
@@ -127,12 +127,11 @@ function createObject(event){
         }
     }
     
-    fetch('YOUR CLOUD FUNCTION URL FOR CREATING A NEW OBJECT',{
+    fetch('https://us-central1-gcp-project-1-zamerman.cloudfunctions.net/postAssociate',{
         method: 'POST',
         body: JSON.stringify(newObj)
     })
 }
-
 
 
 buildTable()
