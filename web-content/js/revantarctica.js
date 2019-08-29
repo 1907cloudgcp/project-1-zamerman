@@ -50,6 +50,30 @@ async function calcSubmit(event){
 }
 
 
+document.getElementById('coor-label').innerText = "Latitude, Longitude:"
+
+document.getElementById('coor-input').type = 'text'
+
+async function coorSubmit(event){
+    event.preventDefault()
+	let coors = document.getElementById('coor-input').value
+    let result = await fetch("https://us-central1-gcp-project-1-zamerman.cloudfunctions.net/getTemperatureAntarctica", {
+        method: 'POST',
+        body: JSON.stringify(coors)
+    })
+    if(document.getElementById('coor-input').type === 'text'){
+        document.getElementById('coor-input').value = 0
+    } else {
+        document.getElementById('coor-input').value = ''
+    }
+    let data = await result.json()
+    let div = document.getElementById('coor-container')
+    let display = document.createElement('p')
+    display.innerText = `Temperature at ${coors} : ${data} `
+    div.appendChild(display)
+
+}
+
 
 async function buildTable (){
     let objectResponse = await fetch("https://us-central1-gcp-project-1-zamerman.cloudfunctions.net/getassociates")
