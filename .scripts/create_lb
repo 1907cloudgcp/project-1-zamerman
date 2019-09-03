@@ -1,0 +1,37 @@
+#! /bin/bash
+
+NETWORK=$1
+
+gcloud compute https-health-checks create $NETWORK-hc \
+	--port 9090 \
+	--request-path "/revantarctica.html"
+gcloud compute backend-services create $NETWORK-back \
+	--enable-cdn \
+	--https-health-checks $NETWORK-hc \
+	--load-balancing-scheme "EXTERNAL" \
+	--port-name express \
+	--protocol HTTPS \
+	--global
+gcloud compute firewall-rules create $NETWORK-https-node \
+	--allow tcp:443 \
+	--direction INGRESS \
+	--network $NETWORK \
+	--priority 1000 \
+	--target-tags node-server \
+	--source-ranges 0.0.0.0/0
+gcloud compute backend-services add-backend $NETWORK-back \
+	--instance-group $NETWORK-servers \
+	--instance-group-zone us-central1-a \
+	--global \
+	--balancing-mode UTILIZATION \
+	--capacity-scaler 1.0 \
+	--max-utilization 0.8
+gcloud compute url-maps create $NETWORK-map \
+	--default-service $NETWORK-back
+gcloud compute target-https-proxies create $NETWORK-lb \
+	--url-map $NETWORK-map \
+	--ssl-certificates revantarctica-cert
+gcloud compute forwarding-rules create $NETWORK-front \
+	--target-https-proxy $NETWORK-lb \
+	--ports 443 \
+	--global

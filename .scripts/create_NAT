@@ -1,0 +1,11 @@
+#! /bin/bash
+
+NETWORK=$1
+
+gcloud compute routers create $NETWORK-router \
+	--network $NETWORK \
+	--region us-central1
+gcloud compute routers nats create $NETWORK-nat \
+	--router $NETWORK-router \
+	--auto-allocate-nat-external-ips \
+	--nat-all-subnet-ip-ranges

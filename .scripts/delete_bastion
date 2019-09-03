@@ -1,0 +1,7 @@
+#! /bin/bash
+
+PROJECT=$1
+
+echo 'y' | gcloud compute firewall-rules delete $PROJECT-block-all-ssh $PROJECT-allow-ssh-to-bastion $PROJECT-allow-ssh-from-bastion
+echo 'y' | gcloud compute instances delete $PROJECT-bastion --zone us-central1-a
+echo 'y' | gcloud compute addresses delete $PROJECT-bastion --region us-central1

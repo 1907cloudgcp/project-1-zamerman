@@ -1,0 +1,14 @@
+#! /bin/bash
+
+PROJECT=$1
+
+gcloud compute instances create $PROJECT-server \
+	--labels name=$PROJECT-server \
+	--machine-type f1-micro \
+	--tags internal \
+	--zone us-central1-b \
+	--no-address \
+	--image-family centos-7 \
+	--image-project centos-cloud \
+	--scopes default \
+	--subnet $PROJECT-a

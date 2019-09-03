@@ -1,0 +1,38 @@
+#! /bin/bash
+
+NETWORK=$1
+
+gcloud compute networks create $NETWORK \
+	--subnet-mode custom
+gcloud compute networks subnets create $NETWORK-a \
+	--network $NETWORK \
+	--range 10.128.0.0/10 \
+	--region us-central1
+gcloud compute networks subnets create $NETWORK-b \
+	--network $NETWORK \
+	--range 10.192.0.0/10 \
+	--region us-central1
+gcloud compute firewall-rules create $NETWORK-allow-icmp \
+	--allow icmp \
+	--direction INGRESS \
+	--network $NETWORK \
+	--priority 65534 \
+	--source-ranges 0.0.0.0/0
+gcloud compute firewall-rules create $NETWORK-allow-internal \
+	--allow tcp:0-65535,udp:0-65535,icmp \
+	--direction INGRESS \
+	--network $NETWORK \
+	--priority 65534 \
+	--source-ranges 10.128.0.0/9
+gcloud compute firewall-rules create $NETWORK-allow-rdp \
+	--allow tcp:3389 \
+	--direction INGRESS \
+	--network $NETWORK \
+	--priority 65534 \
+	--source-ranges 0.0.0.0/0
+gcloud compute firewall-rules create $NETWORK-allow-ssh \
+	--allow tcp:22 \
+	--direction INGRESS \
+	--network $NETWORK \
+	--priority 65534 \
+	--source-ranges 0.0.0.0/0

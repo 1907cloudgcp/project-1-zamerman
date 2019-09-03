@@ -1,0 +1,3 @@
+#!/bin/bash
+
+yes | gcloud compute instances delete $1

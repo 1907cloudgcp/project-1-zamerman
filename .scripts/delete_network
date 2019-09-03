@@ -1,0 +1,8 @@
+#! /bin/bash
+
+NETWORK=$1
+
+echo 'y' | gcloud compute firewall-rules delete $NETWORK-allow-ssh $NETWORK-allow-rdp $NETWORK-allow-internal $NETWORK-allow-icmp
+echo 'y' | gcloud compute networks subnets delete $NETWORK-a --region us-central1
+echo 'y' | gcloud compute networks subnets delete $NETWORK-b --region us-central1
+echo 'y' | gcloud compute networks delete $NETWORK

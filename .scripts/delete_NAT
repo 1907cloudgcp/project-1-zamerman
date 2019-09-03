@@ -1,0 +1,9 @@
+#! /bin/bash
+
+NETWORK=$1
+
+echo 'y' | gcloud compute routers nats delete $NETWORK-nat \
+	--router $NETWORK-router \
+	--region us-central1
+echo 'y' | gcloud compute routers delete $NETWORK-router \
+	--region us-central1

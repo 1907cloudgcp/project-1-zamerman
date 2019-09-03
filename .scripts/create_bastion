@@ -1,0 +1,39 @@
+#! /bin/bash
+
+PROJECT=$1
+
+gcloud compute addresses create $PROJECT-bastion \
+	--region us-central1 \
+	--subnet $PROJECT-a
+gcloud compute instances create $PROJECT-bastion \
+	--labels name=$PROJECT-bastion \
+	--machine-type f1-micro \
+	--tags bastion \
+	--zone us-central1-a \
+	--private-network-ip $PROJECT-bastion \
+	--image-family centos-7 \
+	--image-project centos-cloud \
+	--scopes compute-rw,default \
+	--subnet $PROJECT-a \
+	--no-address
+gcloud compute firewall-rules create $PROJECT-block-all-ssh \
+	--action DENY \
+	--rules tcp:22 \
+	--direction INGRESS \
+	--network $PROJECT \
+	--priority 1000 \
+	--source-ranges 0.0.0.0/0
+gcloud compute firewall-rules create $PROJECT-allow-ssh-from-bastion \
+	--allow tcp:22 \
+	--direction INGRESS \
+	--network $PROJECT \
+	--priority 999 \
+	--source-tags bastion \
+	--target-tags internal
+gcloud compute firewall-rules create $PROJECT-allow-ssh-to-bastion \
+	--allow tcp:22 \
+	--direction INGRESS \
+	--network $PROJECT \
+	--priority 999 \
+	--source-ranges 0.0.0.0/0 \
+	--target-tags bastion

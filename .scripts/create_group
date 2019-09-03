@@ -1,0 +1,40 @@
+#! /bin/bash
+
+NETWORK=$1
+
+gcloud compute disks snapshot $NETWORK-server \
+	--labels name=$NETWORK-snapshot \
+	--snapshot-names $NETWORK-snapshot \
+	--zone us-central1-a
+gcloud compute images create $NETWORK-image \
+	--source-snapshot $NETWORK-snapshot \
+	--labels name=$NETWORK-image
+gcloud compute instance-templates create $NETWORK-template \
+	--labels name=$NETWORK-template \
+	--machine-type f1-micro \
+	--image $NETWORK-image \
+	--tags internal,node-server \
+	--metadata-from-file startup-script=/home/leetong_amerman/instance-scripts/instance-startup \
+	--region us-central1 \
+	--subnet $NETWORK-a \
+	--no-address
+gcloud compute firewall-rules create $NETWORK-allow-node \
+	--allow tcp:9090 \
+	--direction INGRESS \
+	--network $NETWORK \
+	--priority 1000 \
+	--source-ranges 35.191.0.0/16,130.211.0.0/22 \
+	--target-tags node-server
+gcloud compute instance-groups managed create $NETWORK-servers \
+	--size 1 \
+	--template $NETWORK-template \
+	--zone us-central1-a
+gcloud compute instance-groups managed set-named-ports $NETWORK-servers \
+	--named-ports express:443,express:9090 \
+	--zone us-central1-a
+gcloud compute instance-groups managed set-autoscaling $NETWORK-servers \
+	--max-num-replicas 10 \
+	--cool-down-period 60 \
+	--min-num-replicas 1 \
+	--target-cpu-utilization 0.50 \
+	--zone us-central1-a
