@@ -1,0 +1,7 @@
+#! /bin/bash
+export SERVER_KEY=/home/leetong_amerman/serverkey.pem
+export SERVER_CERT=/home/leetong_amerman/servercert.pem
+export SERVER_PASS=password
+gsutil -m cp -r gs://revantarctica-zamerman/project-1-zamerman /home/leetong_amerman/
+cd /home/leetong_amerman/project-1-zamerman
+npm start
